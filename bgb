@@ -1,0 +1,152 @@
+PGouncer work_log
+
+-- install Pgbouncer
+-- create database instances  5434 and 5454
+-- create databases(db0_5434,db2_5434) in 5434
+-- create databases(db1_5454,db3_5454) in 5454
+
+-- create users
+users:(db0_5434_owner,db0_5434_readonly,db0_5434_app,db0_5434_support)
+users:(db2_5434_owner,db2_5434_readonly,db2_5434_app,db2_5434_support)
+
+
+
+users:(db1_5434_owner,db1_5434_readonly,db1_5434_app,db1_5434_support)
+users:(db3_5434_owner,db3_5434_readonly,db3_5434_app,db3_5434_support)
+
+CREATE USERS
+--5434
+			create user db0_5434_owner with NOSUPERUSER NOCREATEDB NOCREATEROLE  NOINHERIT LOGIN NOREPLICATION NOBYPASSRLS  ENCRYPTED PASSWORD 'db0_5434_owner' ;
+			create user db0_5434_readonly with NOSUPERUSER NOCREATEDB NOCREATEROLE  NOINHERIT LOGIN NOREPLICATION NOBYPASSRLS  ENCRYPTED PASSWORD 'db0_5434_readonly' ;
+			create user db0_5434_app with NOSUPERUSER NOCREATEDB NOCREATEROLE  NOINHERIT LOGIN NOREPLICATION NOBYPASSRLS  ENCRYPTED PASSWORD 'db0_5434_app' ;
+			create user db0_5434_support with NOSUPERUSER NOCREATEDB NOCREATEROLE  NOINHERIT LOGIN NOREPLICATION NOBYPASSRLS  ENCRYPTED PASSWORD 'db0_5434_support' ;
+
+			create user db2_5434_owner with NOSUPERUSER NOCREATEDB NOCREATEROLE  NOINHERIT LOGIN NOREPLICATION NOBYPASSRLS  ENCRYPTED PASSWORD 'db2_5434_owner' ;
+			create user db2_5434_readonly with NOSUPERUSER NOCREATEDB NOCREATEROLE  NOINHERIT LOGIN NOREPLICATION NOBYPASSRLS  ENCRYPTED PASSWORD 'db2_5434_readonly' ;
+			create user db2_5434_app with NOSUPERUSER NOCREATEDB NOCREATEROLE  NOINHERIT LOGIN NOREPLICATION NOBYPASSRLS  ENCRYPTED PASSWORD 'db2_5434_app' ;
+			create user db2_5434_support with NOSUPERUSER NOCREATEDB NOCREATEROLE  NOINHERIT LOGIN NOREPLICATION NOBYPASSRLS  ENCRYPTED PASSWORD 'db2_5434_support' ;
+
+--5454
+			create user db1_5454_owner with NOSUPERUSER NOCREATEDB NOCREATEROLE  NOINHERIT LOGIN NOREPLICATION NOBYPASSRLS  ENCRYPTED PASSWORD 'db1_5454_owner' ;
+			create user db1_5454_readonly with NOSUPERUSER NOCREATEDB NOCREATEROLE  NOINHERIT LOGIN NOREPLICATION NOBYPASSRLS  ENCRYPTED PASSWORD 'db1_5454_readonly' ;
+			create user db1_5454_app with NOSUPERUSER NOCREATEDB NOCREATEROLE  NOINHERIT LOGIN NOREPLICATION NOBYPASSRLS  ENCRYPTED PASSWORD 'db1_5454_app' ;
+			create user db1_5454_support with NOSUPERUSER NOCREATEDB NOCREATEROLE  NOINHERIT LOGIN NOREPLICATION NOBYPASSRLS  ENCRYPTED PASSWORD 'db1_5454_support' ;
+
+			create user db3_5454_owner with NOSUPERUSER NOCREATEDB NOCREATEROLE  NOINHERIT LOGIN NOREPLICATION NOBYPASSRLS  ENCRYPTED PASSWORD 'db3_5454_owner' ;
+			create user db3_5454_readonly with NOSUPERUSER NOCREATEDB NOCREATEROLE  NOINHERIT LOGIN NOREPLICATION NOBYPASSRLS  ENCRYPTED PASSWORD 'db3_5454_readonly' ;
+			create user db3_5454_app with NOSUPERUSER NOCREATEDB NOCREATEROLE  NOINHERIT LOGIN NOREPLICATION NOBYPASSRLS  ENCRYPTED PASSWORD 'db3_5454_app' ;
+			create user db3_5454_support with NOSUPERUSER NOCREATEDB NOCREATEROLE  NOINHERIT LOGIN NOREPLICATION NOBYPASSRLS  ENCRYPTED PASSWORD 'db3_5454_support' ;
+
+CREATE DATABASES
+--5434
+		psql --port=5434 --dbname=postgres -c "CREATE DATABASE db0_5434 OWNER db0_5434_owner;"
+		psql --port=5434 --dbname=db0_5434 -c "CREATE SCHEMA db0_5434_owner AUTHORIZATION db0_5434_owner;"
+		psql --port=5434 --dbname=postgres -c "CREATE DATABASE db2_5434 OWNER db2_5434_owner;"
+		psql --port=5434 --dbname=db2_5434 -c "CREATE SCHEMA db2_5434_owner AUTHORIZATION db2_5434_owner;"
+
+--5454
+		psql --port=5454  --dbname=postgres -c "CREATE DATABASE db1_5454 OWNER db1_5454_owner;"
+		psql --port=5454  --dbname=db1_5454 -c "CREATE SCHEMA db1_5454_owner AUTHORIZATION db1_5454_owner;"
+		psql --port=5454  --dbname=postgres -c "CREATE DATABASE db3_5454 OWNER db3_5454_owner;"
+		psql --port=5454  --dbname=db3_5454 -c "CREATE SCHEMA db3_5454_owner AUTHORIZATION db3_5454_owner;"
+		
+		
+Set the search_path for all the above created users
+
+--5434
+		psql  --port=5434 --dbname=postgres -c 'ALTER ROLE db0_5434_owner IN DATABASE db0_5434 SET search_path TO db0_5434_owner,"$user",public;'
+		psql  --port=5434 --dbname=postgres -c 'ALTER ROLE db0_5434_readonly IN DATABASE db0_5434 SET search_path TO db0_5434_owner,"$user",public;'
+		psql  --port=5434 --dbname=postgres -c 'ALTER ROLE db0_5434_app IN DATABASE db0_5434 SET search_path TO db0_5434_owner,"$user",public;'
+		psql  --port=5434 --dbname=postgres -c 'ALTER ROLE db0_5434_support IN DATABASE db0_5434 SET search_path TO db0_5434_owner,"$user",public;'
+
+		psql  --port=5434 --dbname=postgres -c 'ALTER ROLE db2_5434_owner IN DATABASE db2_5434 SET search_path TO db2_5434_owner,"$user",public;'
+		psql  --port=5434 --dbname=postgres -c 'ALTER ROLE db2_5434_readonly IN DATABASE db2_5434 SET search_path TO db2_5434_owner,"$user",public;'
+		psql  --port=5434 --dbname=postgres -c 'ALTER ROLE db2_5434_app IN DATABASE db2_5434 SET search_path TO db2_5434_owner,"$user",public;'
+		psql  --port=5434 --dbname=postgres -c 'ALTER ROLE db2_5434_support IN DATABASE db2_5434 SET search_path TO db2_5434_owner,"$user",public;'
+--5454
+		psql  --port=5454  --dbname=postgres -c 'ALTER ROLE db1_5454_owner IN DATABASE db1_5454 SET search_path TO db1_5454_owner,"$user",public;'
+		psql  --port=5454  --dbname=postgres -c 'ALTER ROLE db1_5454_readonly IN DATABASE db1_5454 SET search_path TO db1_5454_owner,"$user",public;'
+		psql  --port=5454  --dbname=postgres -c 'ALTER ROLE db1_5454_app IN DATABASE db1_5454 SET search_path TO db1_5454_owner,"$user",public;'
+		psql  --port=5454  --dbname=postgres -c 'ALTER ROLE db1_5454_support IN DATABASE db1_5454 SET search_path TO db1_5454_owner,"$user",public;'
+
+		psql  --port=5454  --dbname=postgres -c 'ALTER ROLE db3_5454_owner IN DATABASE db3_5454 SET search_path TO db3_5454_owner,"$user",public;'
+		psql  --port=5454  --dbname=postgres -c 'ALTER ROLE db3_5454_readonly IN DATABASE db3_5454 SET search_path TO db3_5454_owner,"$user",public;'
+		psql  --port=5454  --dbname=postgres -c 'ALTER ROLE db3_5454_app IN DATABASE db3_5454 SET search_path TO db3_5454_owner,"$user",public;'
+		psql  --port=5454  --dbname=postgres -c 'ALTER ROLE db3_5454_support IN DATABASE db3_5454 SET search_path TO db3_5454_owner,"$user",public;'
+		
+		
+For database db0_5434
+psql --port=5434 --dbname=db0_5434 --username=db0_5434_owner -w
+
+			#for user  db0_5434_readonly
+			GRANT CONNECT ON DATABASE db0_5434 TO db0_5434_readonly;
+			GRANT USAGE ON  SCHEMA db0_5434_owner TO db0_5434_readonly;
+			GRANT SELECT ON  ALL TABLES IN SCHEMA db0_5434_owner TO db0_5434_readonly;
+			ALTER DEFAULT PRIVILEGES IN SCHEMA db0_5434_owner GRANT SELECT ON TABLES TO db0_5434_readonly;
+
+			#for user  db0_5434_app
+			GRANT CONNECT ON DATABASE db0_5434  TO db0_5434_app;
+			GRANT USAGE ON  SCHEMA db0_5434_owner TO db0_5434_app;
+			GRANT SELECT,INSERT,UPDATE,DELETE ON  ALL TABLES IN SCHEMA db0_5434_owner TO db0_5434_app;
+			ALTER DEFAULT PRIVILEGES IN SCHEMA db0_5434_owner GRANT SELECT,INSERT,UPDATE,DELETE ON TABLES TO db0_5434_app;
+
+			#for user  db0_5434_support
+			GRANT CONNECT ON DATABASE db0_5434  TO db0_5434_support;
+			GRANT USAGE ON  SCHEMA db0_5434_owner TO db0_5434_support;
+			GRANT SELECT ON  ALL TABLES IN SCHEMA db0_5434_owner TO db0_5434_support;
+			ALTER DEFAULT PRIVILEGES IN SCHEMA db0_5434_owner GRANT SELECT ON TABLES TO db0_5434_support;
+						
+For database db2_5434
+psql --port=5434 --dbname=db2_5434 --username=db2_5434_owner -w
+
+			#for user  db2_5434_readonly
+			GRANT CONNECT ON DATABASE db2_5434 TO db2_5434_readonly;
+			GRANT USAGE ON  SCHEMA db2_5434_owner TO db2_5434_readonly;
+			GRANT SELECT ON  ALL TABLES IN SCHEMA db2_5434_owner TO db2_5434_readonly;
+			ALTER DEFAULT PRIVILEGES IN SCHEMA db2_5434_owner GRANT SELECT ON TABLES TO db2_5434_readonly;
+
+			#for user  db2_5434_app
+			GRANT CONNECT ON DATABASE db2_5434  TO db2_5434_app;
+			GRANT USAGE ON  SCHEMA db2_5434_owner TO db2_5434_app;
+			GRANT SELECT,INSERT,UPDATE,DELETE ON  ALL TABLES IN SCHEMA db2_5434_owner TO db2_5434_app;
+			ALTER DEFAULT PRIVILEGES IN SCHEMA db2_5434_owner GRANT SELECT,INSERT,UPDATE,DELETE ON TABLES TO db2_5434_app;
+
+			#for user  db2_5434_support
+			GRANT CONNECT ON DATABASE db2_5434  TO db2_5434_support;
+			GRANT USAGE ON  SCHEMA db2_5434_owner TO db2_5434_support;
+			GRANT SELECT ON  ALL TABLES IN SCHEMA db2_5434_owner TO db2_5434_support;
+			ALTER DEFAULT PRIVILEGES IN SCHEMA db2_5434_owner GRANT SELECT ON TABLES TO db2_5434_support;
+
+For database db1_5454
+			psql --port=5454 --dbname=db1_5454 --username=db1_5454_owner -w
+
+			#for user  db1_5454_readonly
+			GRANT CONNECT ON DATABASE db1_5454 TO db1_5454_readonly;
+			GRANT USAGE ON  SCHEMA db1_5454_owner TO db1_5454_readonly;
+			GRANT SELECT ON  ALL TABLES IN SCHEMA db1_5454_owner TO db1_5454_readonly;
+			ALTER DEFAULT PRIVILEGES IN SCHEMA db1_5454_owner GRANT SELECT ON TABLES TO db1_5454_readonly;
+
+			#for user  db1_5454_app
+			GRANT CONNECT ON DATABASE db1_5454  TO db1_5454_app;
+			GRANT USAGE ON  SCHEMA db1_5454_owner TO db1_5454_app;
+			GRANT SELECT,INSERT,UPDATE,DELETE ON  ALL TABLES IN SCHEMA db1_5454_owner TO db1_5454_app;
+			ALTER DEFAULT PRIVILEGES IN SCHEMA db1_5454_owner GRANT SELECT,INSERT,UPDATE,DELETE ON TABLES TO db1_5454_app;
+
+			#for user  db1_5454_support
+			GRANT CONNECT ON DATABASE db1_5454  TO db1_5454_support;
+			GRANT USAGE ON  SCHEMA db1_5454_owner TO db1_5454_support;
+			GRANT SELECT ON  ALL TABLES IN SCHEMA db1_5454_owner TO db1_5454_support;
+			ALTER DEFAULT PRIVILEGES IN SCHEMA db1_5454_owner GRANT SELECT ON TABLES TO db1_5454_support;
+
+
+			
+			
+Load data into the databases.
+			/usr/pgsql-9.5/bin/pgbench -i -s 70 db0_5434 --port=5434 --username=db0_5434_owner
+			/usr/pgsql-9.5/bin/pgbench -i -s 70 db2_5434 --port=5434 --username=db2_5434_owner
+			/usr/pgsql-9.5/bin/pgbench -i -s 70 db1_5454 --port=5454 --username=db1_5454_owner
+			/usr/pgsql-9.5/bin/pgbench -i -s 70 db3_5454 --port=5454 --username=db2_5454_owner
+			
+			
+			
+			
