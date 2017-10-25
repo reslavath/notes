@@ -1,0 +1,6 @@
+sudo su - postgres -c "mkdir -p  .ssh && ssh-keygen -q -t rsa -N \"\" -P "" -f ~/.ssh/id_rsa" 2>/dev/null
+sudo su - postgres -c "cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys" 2>/dev/null
+sudo su - postgres -c "chmod og-wx ~/.ssh/authorized_keys" 2>/dev/null
+sudo su - postgres -c "ssh-keyscan -t rsa 127.0.0.1 >~/.ssh/known_hosts" 2>/dev/null 1>/dev/null
+sudo su - postgres -c "ssh-keyscan -t rsa `hostname` >~/.ssh/known_hosts" 2>/dev/null 1>/dev/null
+sudo su - postgres -c "ssh-keyscan -t rsa `hostname -f` >~/.ssh/known_hosts" 2>/dev/null 1>/dev/null
