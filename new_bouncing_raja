@@ -1,0 +1,129 @@
+install Pg10
+install PgBouncer
+
+
+--create users
+postgres=# create user pgb_user1 NOSUPERUSER NOCREATEDB LOGIN ENCRYPTED PASSWORD 'pgb_user1';
+postgres=# create user pgb_user2 NOSUPERUSER NOCREATEDB LOGIN ENCRYPTED PASSWORD 'pgb_user2';
+
+--create databases
+postgres=# create database bench_db1 owner=pgb_user1;
+CREATE DATABASE
+postgres=# create database bench_db2 owner=pgb_user2;
+
+--populate data into newly created databases using pgbench
+-bash-4.2$ /usr/pgsql-10/bin/pgbench --username=pgb_user1 -i -s 20 bench_db1
+NOTICE: table "pgbench_history" does not exist, skipping
+NOTICE: table "pgbench_tellers" does not exist, skipping
+NOTICE: table "pgbench_accounts" does not exist, skipping
+NOTICE: table "pgbench_branches" does not exist, skipping
+creating tables...
+100000 of 2000000 tuples (5%) done (elapsed 0.13 s, remaining 2.51 s)
+200000 of 2000000 tuples (10%) done (elapsed 0.31 s, remaining 2.76 s)
+300000 of 2000000 tuples (15%) done (elapsed 0.51 s, remaining 2.89 s)
+400000 of 2000000 tuples (20%) done (elapsed 0.67 s, remaining 2.68 s)
+500000 of 2000000 tuples (25%) done (elapsed 0.98 s, remaining 2.94 s)
+600000 of 2000000 tuples (30%) done (elapsed 1.19 s, remaining 2.77 s)
+700000 of 2000000 tuples (35%) done (elapsed 1.52 s, remaining 2.83 s)
+800000 of 2000000 tuples (40%) done (elapsed 1.86 s, remaining 2.79 s)
+900000 of 2000000 tuples (45%) done (elapsed 2.03 s, remaining 2.48 s)
+1000000 of 2000000 tuples (50%) done (elapsed 2.30 s, remaining 2.30 s)
+1100000 of 2000000 tuples (55%) done (elapsed 2.60 s, remaining 2.13 s)
+1200000 of 2000000 tuples (60%) done (elapsed 2.73 s, remaining 1.82 s)
+1300000 of 2000000 tuples (65%) done (elapsed 2.97 s, remaining 1.60 s)
+1400000 of 2000000 tuples (70%) done (elapsed 3.16 s, remaining 1.36 s)
+1500000 of 2000000 tuples (75%) done (elapsed 3.30 s, remaining 1.10 s)
+1600000 of 2000000 tuples (80%) done (elapsed 3.49 s, remaining 0.87 s)
+1700000 of 2000000 tuples (85%) done (elapsed 3.66 s, remaining 0.65 s)
+1800000 of 2000000 tuples (90%) done (elapsed 3.87 s, remaining 0.43 s)
+1900000 of 2000000 tuples (95%) done (elapsed 4.06 s, remaining 0.21 s)
+2000000 of 2000000 tuples (100%) done (elapsed 4.26 s, remaining 0.00 s)
+vacuum...
+set primary keys...
+done.
+-bash-4.2$
+-bash-4.2$
+-bash-4.2$ /usr/pgsql-10/bin/pgbench --username=pgb_user2 -i -s 20 bench_db2
+NOTICE: table "pgbench_history" does not exist, skipping
+NOTICE: table "pgbench_tellers" does not exist, skipping
+NOTICE: table "pgbench_accounts" does not exist, skipping
+NOTICE: table "pgbench_branches" does not exist, skipping
+creating tables...
+100000 of 2000000 tuples (5%) done (elapsed 0.13 s, remaining 2.49 s)
+200000 of 2000000 tuples (10%) done (elapsed 0.25 s, remaining 2.26 s)
+300000 of 2000000 tuples (15%) done (elapsed 0.39 s, remaining 2.22 s)
+400000 of 2000000 tuples (20%) done (elapsed 0.56 s, remaining 2.23 s)
+500000 of 2000000 tuples (25%) done (elapsed 1.35 s, remaining 4.04 s)
+600000 of 2000000 tuples (30%) done (elapsed 1.48 s, remaining 3.45 s)
+700000 of 2000000 tuples (35%) done (elapsed 1.99 s, remaining 3.70 s)
+800000 of 2000000 tuples (40%) done (elapsed 2.28 s, remaining 3.42 s)
+900000 of 2000000 tuples (45%) done (elapsed 2.43 s, remaining 2.97 s)
+1000000 of 2000000 tuples (50%) done (elapsed 2.59 s, remaining 2.59 s)
+1100000 of 2000000 tuples (55%) done (elapsed 2.73 s, remaining 2.24 s)
+1200000 of 2000000 tuples (60%) done (elapsed 2.88 s, remaining 1.92 s)
+1300000 of 2000000 tuples (65%) done (elapsed 3.02 s, remaining 1.63 s)
+1400000 of 2000000 tuples (70%) done (elapsed 3.89 s, remaining 1.67 s)
+1500000 of 2000000 tuples (75%) done (elapsed 4.11 s, remaining 1.37 s)
+1600000 of 2000000 tuples (80%) done (elapsed 4.26 s, remaining 1.06 s)
+1700000 of 2000000 tuples (85%) done (elapsed 4.42 s, remaining 0.78 s)
+1800000 of 2000000 tuples (90%) done (elapsed 4.54 s, remaining 0.50 s)
+1900000 of 2000000 tuples (95%) done (elapsed 4.71 s, remaining 0.25 s)
+2000000 of 2000000 tuples (100%) done (elapsed 4.86 s, remaining 0.00 s)
+vacuum...
+set primary keys...
+done.
+-bash-4.2$
+
+
+
+
+
+postgres=# \l+ bench_db*
+ List of databases
+ Name | Owner | Encoding | Collate | Ctype | Access privileges | Size | Tablespace | Description
+-----------+-----------+----------+-------------+-------------+-------------------+--------+------------+-------------
+ bench_db1 | pgb_user1 | UTF8 | en_US.UTF-8 | en_US.UTF-8 | | 307 MB | pg_default |
+ bench_db2 | pgb_user2 | UTF8 | en_US.UTF-8 | en_US.UTF-8 | | 307 MB | pg_default |
+(2 rows)
+
+--install pgbouncer
+--configure pgbouncer
+
+
+/usr/pgsql-10/bin/pgbench --host=127.0.0.1  bench_db1 --port=6432 -c 4 -j 2 -T 600 --username=pgb_user1
+
+
+
+
+
+benchmarking
+-bash-4.2$ /usr/pgsql-10/bin/pgbench --host=127.0.0.1 bench_db1 --port=6432 -c 4 -j 2 -T 60 --username=pgb_user1
+Password:
+starting vacuum...end.
+transaction type: <builtin: TPC-B (sort of)>
+scaling factor: 20
+query mode: simple
+number of clients: 4
+number of threads: 2
+duration: 60 s
+number of transactions actually processed: 42037
+latency average = 5.710 ms
+tps = 700.506677 (including connections establishing)
+tps = 700.558952 (excluding connections establishing)
+
+
+
+postgres=# \q
+-bash-4.2$ /usr/pgsql-10/bin/pgbench --host=127.0.0.1 bench_db1 -c 4 -j 2 -T 60 --username=pgb_user1
+Password:
+starting vacuum...end.
+transaction type: <builtin: TPC-B (sort of)>
+scaling factor: 20
+query mode: simple
+number of clients: 4
+number of threads: 2
+duration: 60 s
+number of transactions actually processed: 62279
+latency average = 3.855 ms
+tps = 1037.637209 (including connections establishing)
+tps = 1037.801808 (excluding connections establishing)
