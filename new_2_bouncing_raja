@@ -1,0 +1,100 @@
+create user xyz_app with NOSUPERUSER NOCREATEDB NOCREATEROLE  NOINHERIT LOGIN NOREPLICATION NOBYPASSRLS  ENCRYPTED PASSWORD 'password' ;
+
+create user xyz_pss with NOSUPERUSER NOCREATEDB NOCREATEROLE  NOINHERIT LOGIN NOREPLICATION NOBYPASSRLS  ENCRYPTED PASSWORD 'password' ;
+
+
+GRANT CONNECT ON DATABASE bench_db1  TO xyz_app;
+GRANT USAGE ON  SCHEMA public  TO xyz_app;
+GRANT SELECT,INSERT,UPDATE,DELETE ON  ALL TABLES IN SCHEMA public  TO xyz_app;
+
+GRANT CONNECT ON DATABASE bench_db1  TO xyz_pss;
+GRANT USAGE ON  SCHEMA public TO xyz_pss;
+GRANT SELECT ON  ALL TABLES IN SCHEMA public TO xyz_pss;
+
+
+bench_db1=> \du xyz_*
+             List of roles
+ Role name |   Attributes   | Member of
+-----------+----------------+-----------
+ xyz_app   | No inheritance | {}
+ xyz_pss   | No inheritance | {}
+
+bench_db1=> \z
+                                       Access privileges
+ Schema |       Name       | Type  |      Access privileges      | Column privileges | Policies
+--------+------------------+-------+-----------------------------+-------------------+----------
+ public | pgbench_accounts | table | pgb_user1=arwdDxt/pgb_user1+|                   |
+        |                  |       | xyz_app=arwd/pgb_user1     +|                   |
+        |                  |       | xyz_pss=r/pgb_user1         |                   |
+ public | pgbench_branches | table | pgb_user1=arwdDxt/pgb_user1+|                   |
+        |                  |       | xyz_app=arwd/pgb_user1     +|                   |
+        |                  |       | xyz_pss=r/pgb_user1         |                   |
+ public | pgbench_history  | table | pgb_user1=arwdDxt/pgb_user1+|                   |
+        |                  |       | xyz_app=arwd/pgb_user1     +|                   |
+        |                  |       | xyz_pss=r/pgb_user1         |                   |
+ public | pgbench_tellers  | table | pgb_user1=arwdDxt/pgb_user1+|                   |
+        |                  |       | xyz_app=arwd/pgb_user1     +|                   |
+        |                  |       | xyz_pss=r/pgb_user1         |                   |
+(4 rows)
+
+
+Install PgBouncer
+
+
+
+
+
+
+[root@centos_241_130 ~]# cat  /var/lib/pgsql/10/data/pg_hba.conf
+# TYPE  DATABASE        USER            ADDRESS                 METHOD
+
+# "local" is for Unix domain socket connections only
+local   all all                               ident
+# IPv4 local connections:
+
+
+host    bench_db1             xyz_pgbouncer             127.0.0.1/32           md5
+host    bench_db1             xyz_app             127.0.0.1/32           md5
+
+
+
+
+[root@centos_241_130 ~]# cat /etc/pgbouncer/pgbouncer.ini
+[databases]
+
+bench_db1 = host=127.0.0.7 port=5454 dbname=bench_db1 auth_user=xyz_pgbouncer
+
+
+[pgbouncer]
+
+logfile = /var/log/pgbouncer/pgbouncer.log
+pidfile = /var/run/pgbouncer/pgbouncer.pid
+auth_type = md5
+auth_file = /etc/pgbouncer/userlist.txt
+auth_query = SELECT usename, passwd FROM pg_shadow WHERE usename=$1
+;auth_hba_file =
+listen_addr = *
+listen_port = 6432
+
+admin_users = postgres
+stats_users = stats, postgres
+pool_mode = transaction
+server_reset_query = DISCARD ALL
+max_client_conn = 100
+default_pool_size = 20
+[root@centos_241_130 ~]#
+
+
+
+[root@centos_241_130 ~]# cat /etc/pgbouncer/userlist.txt
+"xyz_pgbouncer" “md5ae91775247e2ddb2ec165c9d1316ae06"
+
+
+
+
+-bash-4.2$ psql --port=6432 --username=xyz_app --dbname=bench_db1 --host=127.0.0.1
+Password for user xyz_app:
+psql (10.0)
+Type "help" for help.
+
+bench_db1=>
