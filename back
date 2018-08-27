@@ -1,0 +1,1 @@
+for db in xx xc  xdf dfer wet trre;do /bin/pg_dump -d $db -a -n schema_name  -t table_1 -t table_2 > `date +"%d-%m-%Y"`_$db.sql ; done
