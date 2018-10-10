@@ -110,4 +110,73 @@ Fluentd for logging
 Vitess for storage.
 
 
+_______________________
+Kubernetes Architecture
+_______________________
+
+By the end of this chapter, you should be able to:
+
+Discuss the Kubernetes architecture.
+Explain the different components for master and worker nodes.
+Discuss about cluster state management with etcd.
+Review the Kubernetes network setup requirements.
+
+
+A master node has the following components:
+>API server
+All the administrative tasks are performed via the API server within the master node. A user/operator sends REST commands to the API 
+server, which then validates and processes the requests. After executing the requests, the resulting state of the cluster is stored 
+in the distributed key-value store.
+
+>Scheduler
+As the name suggests, the scheduler schedules the work to different worker nodes. The scheduler has the resource usage information 
+for each worker node. It also knows about the constraints that users/operators may have set, such as scheduling work on a node that
+has the label disk==ssd set. Before scheduling the work, the scheduler also takes into account the quality of the service requirements, 
+data locality, affinity, anti-affinity, etc. The scheduler schedules the work in terms of Pods and Services.
+
+>Controller manager
+The controller manager manages different non-terminating control loops, which regulate the state of the Kubernetes cluster. 
+Each one of these control loops knows about the desired state of the objects it manages, and watches their current state through the 
+API server. In a control loop, if the current state of the objects it manages does not meet the desired state, then the control loop 
+takes corrective steps to make sure that the current state is the same as the desired state.
+
+
+>etcd.
+As discussed earlier, etcd is a distributed key-value store which is used to store the cluster state. It can be part of the Kubernetes 
+Master, or, it can be configured externally, in which case, master nodes would connect to it.
+
+WORKER NODE
+-----------
+A worker node is a machine (VM, physical server, etc.) which runs the applications using Pods and is controlled by the master node. 
+Pods are scheduled on the worker nodes, which have the necessary tools to run and connect them. 
+A Pod is the scheduling unit in Kubernetes. It is a logical collection of one or more containers which are always scheduled together. 
+We will explore them further in later chapters.
+
+ 
+we need a container runtime on the worker node. Some examples of container runtimes are: 
+>containerd
+>rkt
+>lxd. 
+Sometimes, Docker is also referred to as a container runtime, 
+but to be precise, Docker is a platform which uses containerd as a container runtime. 
+
+https://hackernoon.com/docker-containerd-standalone-runtimes-heres-what-you-should-know-b834ef155426
+https://stackoverflow.com/questions/46649592/dockerd-vs-docker-containerd-vs-docker-runc-vs-docker-containerd-ctr-vs-docker-c
+
+
+dockerd - The Docker daemon itself. The highest level component in your list and also the only 'Docker' product listed. Provides all 
+the nice UX features of Docker.
+(docker-)containerd - Also a daemon, listening on a Unix socket, exposes gRPC endpoints. Handles all the low-level container management 
+tasks, storage, image distribution, network attachment, etc...
+(docker-)containerd-ctr - A lightweight CLI to directly communicate with containerd. Think of it as how 'docker' is to 'dockerd'.
+(docker-)runc - A lightweight binary for actually running containers. Deals with the low-level interfacing with Linux capabilities like cgroups, namespaces, etc...
+(docker-)containerd-shim - After runC actually runs the container, it exits (allowing us to not have any long-running processes responsible for our containers). The shim is the component which sits between containerd and runc to facilitate this.
+
+
+
+
+
+
+
+
 
