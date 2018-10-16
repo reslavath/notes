@@ -1,0 +1,2 @@
+Session parameters can be changed on the fly within a database session, and can have a hierarchy of settings: at the system level (postgresql.conf), at the database level (ALTER DATABASE...SET), at the role level (ALTER ROLE...SET), or at the session level (SET). If the parameter is set at multiple levels, then the most granular setting takes precedence (for example, session overrides role, role overrides database, and database overrides system).
+A system parameter can only be changed via the postgresql.conf file(s).
