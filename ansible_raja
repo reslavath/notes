@@ -1,0 +1,39 @@
+su - ansible
+ ssh-keygen -t rsa -C "0987987807"
+ ssh-copy-id postgres@192.168.168.246
+ ssh-copy-id postgres@192.168.168.245
+ ssh-copy-id postgres@192.168.168.237
+ ansible@ojlkjljj[DEV][~] $ ssh-copy-id postgres@10.198.39.1
+ 
+
+ansible@ojlkjljj[DEV][~] $ cat non_prod_pg
+[413_local]
+10.198.39.1   ansible_connection=ssh  ansible_user=postgres
+
+
+[WM_test_server]
+192.168.168.246   ansible_connection=ssh  ansible_user=postgres
+192.168.168.245   ansible_connection=ssh  ansible_user=postgres
+192.168.168.237   ansible_connection=ssh  ansible_user=postgres
+
+
+
+
+ansible@ojlkjljj[DEV][~] $ ansible all -i non_prod_pg  -m ping
+[DEPRECATION WARNING]: DEFAULT_SUDO_USER option, In favor of become which is a generic framework . This feature will
+ be removed in version 2.8. Deprecation warnings can be disabled by setting deprecation_warnings=False in
+ansible.cfg.
+192.168.168.246 | SUCCESS => {
+    "changed": false,
+    "ping": "pong"
+}
+192.168.168.237 | SUCCESS => {
+    "changed": false,
+    "ping": "pong"
+}
+192.168.168.245 | SUCCESS => {
+    "changed": false,
+    "ping": "pong"
+}
+
+
