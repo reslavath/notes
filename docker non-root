@@ -1,0 +1,74 @@
+1.	Pull the latest postgres image
+[root@vm2 ~]# docker pull postgres
+Using default tag: latest
+Trying to pull repository docker.io/library/postgres ...
+latest: Pulling from docker.io/library/postgres
+a5a6f2f73cd8: Pull complete
+e50fbea8af5a: Pull complete
+c91e4af2ff8e: Pull complete
+16ba314c612f: Pull complete
+…..
+…..
+sha256:28b4a1b0d3ae9b38a16c97a4e655bdc13496a304d1a241c531ac1efc2faa7230
+Status: Downloaded newer image for docker.io/postgres:latest
+
+2.	Run the Docker container using non-root user postgres
+[root@vm2 ~]# docker run --name cartman_pg01  --user postgres -d -p 5199:5432 postgres
+c78af93266cbee463e333677069bf87705d0b26cefa75a25fe041345cc175e6e
+[root@vm2 ~]#
+
+
+[root@vm2 ~]# docker ps --latest
+CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                    NAMES
+c78af93266cb        postgres            "docker-entrypoint..."   55 seconds ago      Up 54 seconds       0.0.0.0:5199->5432/tcp   cartman_pg01
+[root@vm2 ~]#
+
+3.	Login to the container using docker exec and with the psql inside the  container. This means we are 
+a.	su – postgres into the container directly without the password 
+b.	psql into PostgreSQL instance in the container with postgres database user without password.
+
+[root@vm2 ~]# docker exec -it --user postgres cartman_pg01  psql
+psql (11.1 (Debian 11.1-1.pgdg90+1))
+Type "help" for help.
+
+postgres=# select current_user;
+ current_user
+--------------
+ postgres
+(1 row)
+
+postgres=#
+
+4.	we can follow the similar approach during the deployments too.
+During the deployments, we need to copy the sql’s files into the container using docker cp.
+And execute these SQL’s directly using docker exec 
+
+
+root@vm2 ~]# ls -ltrh
+-rw-r--r--. 1 root root   32 Dec  1 22:30 test.sql
+ [root@vm2 ~]#
+[root@vm2 ~]# cat test.sql
+select * from pg_stat_activity;
+[root@vm2 ~]# docker cp test.sql c78af93266cb:/tmp
+[root@vm2 ~]#
+
+[root@vm2 ~]# docker exec -it --user postgres cartman_pg01  psql -f /tmp/test.sql
+
+ datid | datname  | pid | usesysid | usename  | application_name | client_addr | client_hostname | client_port |         backend_start         |          xact_start           |          query_start
+   |         state_change         | wait_event_type |     wait_event      | state  | backend_xid | backend_xmin |              query              |         backend_type
+-------+----------+-----+----------+----------+------------------+-------------+-----------------+-------------+-------------------------------+-------------------------------+----------------------------
+---+------------------------------+-----------------+---------------------+--------+-------------+--------------+---------------------------------+------------------------------
+       |          |  43 |          |          |                  |             |                 |             | 2018-12-01 14:51:56.789206+00 |                               |
+   |                              | Activity        | AutoVacuumMain      |        |             |              |                                 | autovacuum launcher
+       |          |  45 |       10 | postgres |                  |             |                 |             | 2018-12-01 14:51:56.79092+00  |                               |
+   |                              | Activity        | LogicalLauncherMain |        |             |              |                                 | logical replication launcher
+ 13067 | postgres |  83 |       10 | postgres | psql             |             |                 |          -1 | 2018-12-01 14:56:53.178046+00 | 2018-12-01 14:56:53.182289+00 | 2018-12-01 14:56:53.182289+
+00 | 2018-12-01 14:56:53.18229+00 |                 |                     | active |             |          569 | select * from pg_stat_activity; | client backend
+       |          |  41 |          |          |                  |             |                 |             | 2018-12-01 14:51:56.791781+00 |                               |
+   |                              | Activity        | BgWriterMain        |        |             |              |                                 | background writer
+       |          |  40 |          |          |                  |             |                 |             | 2018-12-01 14:51:56.79672+00  |                               |
+   |                              | Activity        | CheckpointerMain    |        |             |              |                                 | checkpointer
+       |          |  42 |          |          |                  |             |                 |             | 2018-12-01 14:51:56.792134+00 |                               |
+   |                              | Activity        | WalWriterMain       |        |             |              |                                 | walwriter
+(6 rows)
+
