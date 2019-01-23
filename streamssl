@@ -1,0 +1,52 @@
+1.	Create CA key’s n CA certificate  in the MASTER
+
+MASTER
+openssl req -new -nodes -text -out root.csr -keyout root.key -subj "/CN=root.xxxxxxxxx107.uk.dev.net" 
+chmod og-rwx root.key
+openssl x509 -req -in root.csr -text -days 3650 -extensions v3_ca -signkey root.key -out root.crt
+
+2.	Create server.key and server.csr and get your key signed by CA
+openssl req -new -nodes -text -out server.csr -keyout server.key -subj "/CN=xxxxxxxxx107.uk.dev.net" 
+chmod og-rwx server.key
+openssl x509 -req -in server.csr -text -days 365 -CA root.crt -CAkey root.key -CAcreateserial -out server.crt
+
+
+3.	COPY root.crt and root.key to the slave server (postgres home directory) FROM master server and generate client key’s and get it signed by a CA.
+CLIENT 
+openssl req -new -nodes -text -out postgresql.csr -keyout postgresql.key -subj "/CN=xxxxxxxxx111.uk.dev.net" 
+chmod og-rwx postgresql.key
+openssl x509 -req -in postgresql.csr -text -days 365 -CA root.crt -CAkey root.key -CAcreateserial -out postgresql.crt
+
+
+postgres@xxxxxxxxx111[DEV][.postgresql] $ pwd
+/var/lib/pgsql/.postgresql
+postgres@xxxxxxxxx111[DEV][.postgresql] $ ls -ltrh
+total 12K
+-rw-r----- 1 postgres postgres 1.1K Jan 23 08:32 root.crt
+-rw------- 1 postgres postgres 1.7K Jan 23 08:48 postgresql.key
+-rw-r----- 1 postgres postgres 1021 Jan 23 08:48 postgresql.crt
+postgres@xxxxxxxxx111[DEV][.postgresql] $
+
+
+4.	Prepare the master
+
+postgres@xxxxxxxxx107[DEV][~] $ tail -n 10  /postgres/data/postgresql.conf
+
+ssl=on
+ssl_ca_file='root.crt'
+ssl_cert_file='server.crt'
+ssl_key_file='server.key'
+wal_level = hot_standby
+max_wal_senders = 5
+wal_keep_segments = 0
+max_replication_slots = 5
+hot_standby = on
+postgres@xxxxxxxxx107[DEV][~] $
+
+CREATE USER "xxxxxxxxx111.uk.dev.net"  WITH REPLICATION CONNECTION LIMIT 2
+
+hostssl replication xxxxxxxxx111.uk.dev.net  10.198.238.111/32 cert clientcert=1
+
+Slave server
+pg_basebackup -D /postgres/data  -P -R -d "host=xxxxxxxxx107.uk.dev.net user="xxxxxxxxx111.uk.dev.net" sslmode=verify-full sslcompression=0"
+
