@@ -50,3 +50,33 @@ hostssl replication xxxxxxxxx111.uk.dev.net  10.198.238.111/32 cert clientcert=1
 Slave server
 pg_basebackup -D /postgres/data  -P -R -d "host=xxxxxxxxx107.uk.dev.net user="xxxxxxxxx111.uk.dev.net" sslmode=verify-full sslcompression=0"
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+reff
+https://www.sraoss.co.jp/event_seminar/2018/PostgreSQL-HA-with-Pgpool-II-20180925.pdf
