@@ -28,18 +28,14 @@ STEPS
                 barman@hostname[DEV][~] $ pwd
                 /var/lib/barman
                 barman@hostname[DEV][~] $ cat .ssh/id_rsa.pub
-     ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCoCzmzlh43rKw2t+t54E3RcshG+NEcOJ8jKpAVjCdM9oRKhkVlCk1RB8k2ZiqnMmC64ypfVY+3ttBRX0i9mjVnI7uTMPDRr2R53Tjaih8LFs+nRRxrTpSNcCkqb9Si3UztQaEeVexfDR+ruZionCShYnR9/7U9CDhPapNnj27M4DBSbB75MXRvjAMCaaXnbgBBC/obcIwf50BKTcEWTk54H4AJXnib7aq2NlU6oPP/atvPF897V0uSKHXjSAHCoPKuaZRMEfwvlSS6c8JdpoVb03UPb4RYS59P2ElYGD2QL487wWR6h36t2Y5dtqH45+Iihu9NlPKDg5m40eBh+zvp barman@hostname
      barman@hostname[DEV][~] touch authorized_keys
      postgres@hostname[DEV][~] touch authorized_keys
                 postgres@hostname[DEV][~] $ pwd
                 /home/postgres
                 postgres@hostname[DEV][~] $ cat .ssh/id_rsa.pub
-     ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC+shT5WjnucxSJvayDNfEUPYcmN/YmHyUefGMHG+hA6VKadvYogc8TakH/EaAvJmGMnbBja8Ch4Z8Nor4WNIYz7rrXmeKE+cG5RvRoBDKCGcnkEv3mYHoxapPBul7sWk6jPjlAoldGBKhhPdf5/Cq667wcWtryqQkGnExA0Ao+pI6MF8Ofm2p6t0r2CwGuRdO1Jcrj346QoX3QLyFCzKgsEcMY86BvB35Th1/WZlkjaPPD9unVhCdylkW4PI62ju847cEpGoFK4L36d1h/e840E4hqtYmmHA+wm9IqLYFUmprkSMnSp8S3j1gPnpaW2q4J/Fxjc0LHnlsNbUj/tEFN postgres@hostname
                 --
                 postgres@hostname[DEV][~] $ cat .ssh/authorized_keys
-     ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCoCzmzlh43rKw2t+t54E3RcshG+NEcOJ8jKpAVjCdM9oRKhkVlCk1RB8k2ZiqnMmC64ypfVY+3ttBRX0i9mjVnI7uTMPDRr2R53Tjaih8LFs+nRRxrTpSNcCkqb9Si3UztQaEeVexfDR+ruZionCShYnR9/7U9CDhPapNnj27M4DBSbB75MXRvjAMCaaXnbgBBC/obcIwf50BKTcEWTk54H4AJXnib7aq2NlU6oPP/atvPF897V0uSKHXjSAHCoPKuaZRMEfwvlSS6c8JdpoVb03UPb4RYS59P2ElYGD2QL487wWR6h36t2Y5dtqH45+Iihu9NlPKDg5m40eBh+zvp barman@hostname
      barman@hostname[DEV][~] $ cat .ssh/authorized_keys
-     ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC+shT5WjnucxSJvayDNfEUPYcmN/YmHyUefGMHG+hA6VKadvYogc8TakH/EaAvJmGMnbBja8Ch4Z8Nor4WNIYz7rrXmeKE+cG5RvRoBDKCGcnkEv3mYHoxapPBul7sWk6jPjlAoldGBKhhPdf5/Cq667wcWtryqQkGnExA0Ao+pI6MF8Ofm2p6t0r2CwGuRdO1Jcrj346QoX3QLyFCzKgsEcMY86BvB35Th1/WZlkjaPPD9unVhCdylkW4PI62ju847cEpGoFK4L36d1h/e840E4hqtYmmHA+wm9IqLYFUmprkSMnSp8S3j1gPnpaW2q4J/Fxjc0LHnlsNbUj/tEFN postgres@hostname
 
 3.	configuration
                 --change postgreSQL conf
