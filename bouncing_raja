@@ -200,10 +200,10 @@ GRANT SELECT ON pg_catalog.pg_shadow TO pgbouncer;
 			GRANT SELECT ON pg_catalog.pg_shadow TO pgbouncer;
 
 Add the databases in Pgbouncer.ini and restart pgbouncer service.
-db2_5434 = host=10.193.107.240 dbname=db2_5434  port=5434 auth_user=pgbouncer
+db2_5434 = host=192.168.107.240 dbname=db2_5434  port=5434 auth_user=pgbouncer
 
-db1_5454 = host=10.193.107.240 dbname=db1_5454  port=5454 auth_user=pgbouncer
-db3_5454 = host=10.193.107.240 dbname=db3_5454  port=5454 auth_user=pgbouncer
+db1_5454 = host=192.168.107.240 dbname=db1_5454  port=5454 auth_user=pgbouncer
+db3_5454 = host=192.168.107.240 dbname=db3_5454  port=5454 auth_user=pgbouncer
 
 
 
@@ -236,20 +236,20 @@ Here’s how a user matt will authenticate
 			
 			
 new setup 
-  psql --host=uklvadsql506  --port=5434 --username=db0_5434_owner --dbname=db0_5434 -W
-   app server ::: uklvadapp090
-   PgBouncer ::: uklvadapp030
-   database servers :::  uklvadsql506:5434 uklvadsql506:5454
+  psql --host=hostname506  --port=5434 --username=db0_5434_owner --dbname=db0_5434 -W
+   app server ::: hostname090
+   PgBouncer ::: hostname030
+   database servers :::  hostname506:5434 hostname506:5454
 			
 			
 			
 			
-postgres = host=10.193.107.240 dbname=postgres auth_user=pgbouncer
-db0_5434 = host=10.193.107.240 dbname=db0_5434  user=db0_5434_readonly port=5434 auth_user=pgbouncer
+postgres = host=192.168.107.240 dbname=postgres auth_user=pgbouncer
+db0_5434 = host=192.168.107.240 dbname=db0_5434  user=db0_5434_readonly port=5434 auth_user=pgbouncer
 
 
-psql --host=10.198.36.111  --port=6432 --username=db0_5434_readonly --dbname=db0_5434 -W
-psql --host=10.193.107.240  --port=5434 --username=pgbouncer --dbname=postgres -W
+psql --host=192.168.36.111  --port=6432 --username=db0_5434_readonly --dbname=db0_5434 -W
+psql --host=192.168.107.240  --port=5434 --username=pgbouncer --dbname=postgres -W
 
 	
 create user pgbouncer with NOSUPERUSER NOCREATEDB NOCREATEROLE  NOINHERIT LOGIN NOREPLICATION NOBYPASSRLS  ENCRYPTED PASSWORD 'pgbouncer' ;
@@ -263,14 +263,14 @@ db2_5434_owner
 db2_5434_readonly
 db2_5434_support 
 
-psql --host=10.198.36.111  --port=6432 --username=db0_5434_readonly --dbname=db0_5434
-psql --host=10.198.36.111  --port=6432 --username=db0_5434_app --dbname=db0_5434
-psql --host=10.198.36.111  --port=6432 --username=db0_5434_app --dbname=db0_5434
+psql --host=192.168.36.111  --port=6432 --username=db0_5434_readonly --dbname=db0_5434
+psql --host=192.168.36.111  --port=6432 --username=db0_5434_app --dbname=db0_5434
+psql --host=192.168.36.111  --port=6432 --username=db0_5434_app --dbname=db0_5434
 
 
 
 
-psql --host=uklvadsql506 --port=5434 --username="pgbouncer" --dbname=db0_5434
+psql --host=hostname506 --port=5434 --username="pgbouncer" --dbname=db0_5434
 
 
 
@@ -298,11 +298,11 @@ GRANT EXECUTE ON FUNCTION pgbouncer.user_lookup(text) TO pgbouncer;
 
 			
 Check Commands
-psql --port=6432 --username=db1_5454_owner  --dbname=db1_5454  --host=uklvadapp030
-psql --port=6432 --username=db0_5434_owner  --dbname=db0_5434  --host=uklvadapp030
-psql --port=6432 --username=db2_5434_owner  --dbname=db2_5434  --host=uklvadapp030
-psql --port=6432 --username=db1_5454_owner  --dbname=db1_5454  --host=uklvadapp030
-psql --port=6432 --username=db3_5454_owner  --dbname=db3_5454  --host=uklvadapp030
+psql --port=6432 --username=db1_5454_owner  --dbname=db1_5454  --host=hostname030
+psql --port=6432 --username=db0_5434_owner  --dbname=db0_5434  --host=hostname030
+psql --port=6432 --username=db2_5434_owner  --dbname=db2_5434  --host=hostname030
+psql --port=6432 --username=db1_5454_owner  --dbname=db1_5454  --host=hostname030
+psql --port=6432 --username=db3_5454_owner  --dbname=db3_5454  --host=hostname030
 
 			
 			
@@ -313,4 +313,59 @@ psql --port=6432 --username=db3_5454_owner  --dbname=db3_5454  --host=uklvadapp0
 local   all             all                                     trust
 host    all             all             127.0.0.1/32            trust
 host    all             all             ::1/128                 trust
-host    all             all             10.198.36.111/32        trust
+host    all             all             192.168.36.111/32        trust
+
+
+
+
+
+
+Customer Scenario		
+		
+S.No	Scenarios 	Proposal
+1	multi-tenant (SaaS) Offering 	
+2	User base growing from thousands to millions	
+3	Customers to have confidence secure,safe and allways available 	
+4	3-tier stack	
+5	Experimenting with PostgreSQL, migrating away from Oracle.	we can propose migarting stratergy from Oracle to PostgreSQL for existing database in UK.
+6	5 requests per second, 10 rps or maybe 100 rps	
+7	SA's and Dev's currently use Microsoft Active Directory(AD) accounts  to single sign-on to their infrastructure 	
+8	Customer's usernames and hashed passwords stored in Oracle database	
+9	secure system that allows it to enforce policies and other governance rules	
+10	data is backed up to tape and sent off site regularly 	AWS-S3 move to S3 Glacier
+11	want to improve backup and restore capabilities	
+12	Lacks a robust Disaster Recovery solution 	
+13	wants to consider an active-active solution 	
+		
+Concerned		
+		
+S.No	Concerned 	How they are addressed 
+1	It takes long time to restore the system in the event of disruption, or disaster	
+2	High TCO due to increasing cost of licensing  relevant Oracle Databases	
+3	Modernizing the data layer of their Accounting software to control cost,improve performance and accelerate new feature releases	start with per customer one database
+4	scaling with demand where they potentially grow to support millions of user with transaction rates above 500 per second	
+5	Provision for Disaster Recovery and archival stratergy for inactive objects greater than 6 months 	Archival stratergy is ready with DMS + S3 + S3 Glacier
+6	Effective distribution of load with self healing infra that recovers from failed service instances, preferbaly active-active configuration that does not require manual intervention	
+7	security of data at rest and in transit	
+8	secure access to the environment of their customers and data	
+		
+		
+Objective 		
+		
+Cost effective, manageable,secure,scalable,high performance,efficient, highly avaialble, fault tolerant and recoverable architecture		
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
